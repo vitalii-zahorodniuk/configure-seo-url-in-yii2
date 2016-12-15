@@ -1,23 +1,22 @@
 Configure SEO-friendly URLs in Yii2:
 =
-1. In main `.htaccess` file, after `RewriteEngine` or `RewriteBase` *(if exist)* add:
+
+1. In `.htaccess` file add:
 
   ```apache
-  # see 
+  # Add a slash at the end of the URLs
   RewriteCond %{REQUEST_URI} !(/$|\.)
-  RewriteRule (.*) %{REQUEST_URI}/ [R=301,L]
+  RewriteRule .* %{REQUEST_URI}/ [R=301,L]
+  # Remove the double slashes from URLs
+  RewriteCond %{THE_REQUEST} //
+  RewriteRule .* /$0 [R=301,L]
   ```
-
-1. Configure yii url manager component with next params:
+  
+1. Add slash suffix & disable normalizer in urlManager component config:
   ```php
   'urlManager' => [
-    'enablePrettyUrl' => true,
-    'showScriptName' => false,
     'suffix' => '/',
-    'normalizer' => [
-      'class' => \yii\web\UrlNormalizer::className(),
-      'normalizeTrailingSlash' => false,
-      'action' => \yii\web\UrlNormalizer::ACTION_REDIRECT_PERMANENT,
-    ],
+    'normalizer' => false,
+    // other url manager config
   ],
   ```
